@@ -16,15 +16,11 @@ import org.apache.mina.core.session.IoSession;
 import com.android.mina.RPCService.service.MinaRPCService;
 import com.android.mina.domain.MsgPack;
 import com.android.mina.domain.PackageTool;
-import com.android.mina.manager.DispathFactory;
-import com.android.mina.manager.MinaMsgManager;
-import com.android.mina.test.TestBean;
 
 
 public class MinaHandler extends IoHandlerAdapter{
-	public final DispathFactory factory;
 	public MinaHandler(){
-		factory=new DispathFactory();
+
 	}
 	@Override
 	public void messageSent(IoSession session, Object message) throws Exception {
@@ -71,11 +67,14 @@ public class MinaHandler extends IoHandlerAdapter{
 		System.err.println("收到客户端数据messageReceived----------："+ mp);
 		try
 		{
-
-			MinaRPCService service= MinaServer.getService(mp.getMsgStatus());
-			Method method=MinaServer.getMethod(mp.getMsgStatus(), mp.getMsgMethod());
+			//获取服务
+			MinaRPCService service= MinaServer.getService(mp.getRpcType());
+			//获取方法
+			Method method=MinaServer.getMethod(mp.getRpcType(), mp.getRpcMethod());
 			if(service!=null&&method!=null){
+				//解包获取参数
 				Serializable obj=PackageTool.unpackMsg(mp);
+				//通过反射执行该方法
 				Object result=method.invoke(service,obj);
 				System.out.println(result);
 			}

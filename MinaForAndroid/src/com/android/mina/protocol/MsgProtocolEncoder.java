@@ -1,7 +1,6 @@
-package com.android.mina.charset;
+package com.android.mina.protocol;
 
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -10,6 +9,13 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
 import com.android.mina.domain.MsgPack;
 
+/** 
+* @ClassName: MsgProtocolEncoder 
+* @Description:  协议编码
+* @author LinJ
+* @date 2015-2-13 下午5:06:49 
+*  
+*/
 public class MsgProtocolEncoder extends ProtocolEncoderAdapter{
 
 	public MsgProtocolEncoder() {   
@@ -24,8 +30,8 @@ public class MsgProtocolEncoder extends ProtocolEncoderAdapter{
 			//设置消息内容的长度
 			buf.putInt(mp.getMsgLength()); 
 			//设置消息的功能函数
-			buf.putInt(mp.getMsgMethod());
-			buf.putInt(mp.getMsgStatus());
+			buf.putInt(mp.getRpcMethod());
+			buf.putInt(mp.getRpcType());
 			if (null != mp.getBytes()) {
 				buf.put(mp.getBytes());
 			}   

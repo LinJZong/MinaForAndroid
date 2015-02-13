@@ -19,7 +19,7 @@ public class ClientKeepAliveMessageFactoryImpl implements KeepAliveMessageFactor
 	 static{
 		 HEARTBEATREQUEST=new MsgPack();
 		//请求协议
-		 HEARTBEATREQUEST.setMsgMethod(0);
+		 HEARTBEATREQUEST.setRpcMethod(0);
 	}
 	//心跳包内容
    
@@ -56,7 +56,7 @@ public class ClientKeepAliveMessageFactoryImpl implements KeepAliveMessageFactor
      */
     public boolean isResponse(IoSession session, Object message) {
     	MsgPack msgPack=(MsgPack)message;
-        if(msgPack!=null&&msgPack.getMsgMethod()==HEARTBEATREQUEST.getMsgMethod()){
+        if(msgPack!=null&&msgPack.getRpcMethod()==HEARTBEATREQUEST.getRpcMethod()){
         	System.out.println("服务器返回发心跳事件: " + message);
             return true;
         }

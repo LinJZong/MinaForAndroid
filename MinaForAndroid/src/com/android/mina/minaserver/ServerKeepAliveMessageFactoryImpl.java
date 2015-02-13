@@ -36,7 +36,7 @@ public class ServerKeepAliveMessageFactoryImpl implements KeepAliveMessageFactor
      * @author Herman.Xiong
      */
     public boolean isRequest(IoSession session, Object message) {
-        if(message instanceof MsgPack&&((MsgPack)message).getMsgMethod()==0){
+        if(message instanceof MsgPack&&((MsgPack)message).getRpcMethod()==0){
 	        return true;
 	    }
         return false;

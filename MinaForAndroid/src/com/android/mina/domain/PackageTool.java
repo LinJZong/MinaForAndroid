@@ -26,7 +26,7 @@ public class PackageTool {
 			oos.writeObject(obj);
 			byte[] bytes=baos.toByteArray();
 			msgPack.setMsgLength(bytes.length);
-			msgPack.setMsgMethod(0);
+			msgPack.setRpcMethod(0);
 			msgPack.setBytes(bytes);
 			return msgPack;
 		} catch (IOException e) {
@@ -60,7 +60,7 @@ public class PackageTool {
 	 * MethodName: DeserializePerson 
 	 * Description: 反序列Serializable对象
 	 */
-	private static void unpackMsgWithoutReturn(MsgPack msgPack) {
+	public static void unpackMsgWithoutReturn(MsgPack msgPack) {
 		ByteArrayInputStream bais = null;
 		try {
 			// 反序列化
@@ -75,14 +75,21 @@ public class PackageTool {
 
 
 
+	/**  
+	*  序列化对象同时对RPC调用的方法赋值
+	*  @param service 调用的服务
+	*  @param methodName 服务内的方法
+	*  @param obj 序列化对象 即参数
+	*  @return   
+	*/
 	public static MsgPack packMsg(MinaRPCService service, String methodName,
 			Serializable obj) {
 		// TODO Auto-generated method stub
 		MsgPack msgPack=packMsg(obj);
 		if(msgPack!=null){
-			msgPack.setMsgMethod(methodName.hashCode());
+			msgPack.setRpcMethod(methodName.hashCode());
 			int type= service.getClass().getAnnotation(MinaRPCType.class).typeName().hashCode();
-			msgPack.setMsgStatus(type);
+			msgPack.setRpcType(type);
 			return msgPack;
 		}	
 		return null;

@@ -9,9 +9,9 @@ public class ServerTest {
 		//启动mina服务器
 		if (MinaServer.serverStart()) {
 			MinaServer.addService(new ServerTestService());
-			System.err.println("netty start success");
+			System.err.println("mina start success");
 		}else {
-			System.err.println("netty start fail");
+			System.err.println("mina start fail");
 		}
 		new Thread(new Runnable() {
 

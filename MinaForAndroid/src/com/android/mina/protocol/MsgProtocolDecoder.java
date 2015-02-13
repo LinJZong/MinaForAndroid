@@ -1,8 +1,6 @@
-package com.android.mina.charset;
+package com.android.mina.protocol;
 
-import java.io.File;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.AttributeKey;
@@ -11,10 +9,13 @@ import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 
 import com.android.mina.domain.MsgPack;
-/**
- * @see 协议解码
- * @author Herman.Xiong
- * @date 2014年6月11日 16:47:24
+
+/** 
+ * @ClassName: MsgProtocolDecoder 
+ * @Description:  协议解码
+ * @author LinJ
+ * @date 2015-2-13 下午5:06:02 
+ *  
  */
 public class MsgProtocolDecoder extends CumulativeProtocolDecoder  {    
 	private final AttributeKey CONTEXT =new AttributeKey(getClass(), "context" );
@@ -27,7 +28,7 @@ public class MsgProtocolDecoder extends CumulativeProtocolDecoder  {
 	}
 
 	public void finishDecode(IoSession arg0, ProtocolDecoderOutput arg1)
-	throws Exception {
+			throws Exception {
 
 	}
 
@@ -45,9 +46,10 @@ public class MsgProtocolDecoder extends CumulativeProtocolDecoder  {
 				int msgStatus=ioBuffer.getInt();
 				mp=new MsgPack();
 				mp.setMsgLength(msgLength);
-				mp.setMsgMethod(msgMethod);
-				mp.setMsgStatus(msgStatus);
+				mp.setRpcMethod(msgMethod);
+				mp.setRpcType(msgStatus);
 				session.setAttribute(CONTEXT,mp);
+				//当前长度为0时，直接返回MsgPack对象
 				if(msgLength==0){
 					session.removeAttribute(CONTEXT);	
 					out.write(mp);

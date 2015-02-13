@@ -4,27 +4,28 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
-/**
- * @see 自定义数据包
- * @author Herman.Xiong
- * @date 2014年6月11日 11:31:45
- */
+
+/** 
+* @ClassName: MsgPack 
+* @Description:  传输的数据包
+* @author LinJ
+* @date 2015-2-13 下午5:08:13 
+*  
+*/
 public class MsgPack implements Serializable{
 	/**
 	 * 序列化和反序列化的版本号
 	 */
 	private static final long serialVersionUID = 1L;
-	//消息长度
+	//数据包长度
 	private int msgLength;
-	//消息方法
-	private int msgMethod;
-	//消息状态
-	private int msgStatus;
-	//编码方式
-	private  final String charset="UTF-8";
+	//RPC对象的方法
+	private int rpcMethod;
+	//RPC对象的类型
+	private int rpcType;
 	//序列化后的字节数组
 	private byte[] bytes;
-	//序列化的对象
+	//序列化的对象，为真正需要传输的数据对象
 	private Serializable obj;
 	public MsgPack() {}
 
@@ -36,26 +37,26 @@ public class MsgPack implements Serializable{
 		this.msgLength = msgLength;
 	}
 
-	public int getMsgMethod() {
-		return msgMethod;
+	public int getRpcMethod() {
+		return rpcMethod;
 	}
 
-	public void setMsgMethod(int msgMethod) {
-		this.msgMethod = msgMethod;
+	public void setRpcMethod(int msgMethod) {
+		this.rpcMethod = msgMethod;
 	}
 
 
 	public String toString() {
-		return "MsgPack [msgLength=" + msgLength + ", msgMethod=" + msgMethod
-		+ ",msgStatus="+msgStatus+"]";
+		return "MsgPack [msgLength=" + msgLength + ", msgMethod=" + rpcMethod
+		+ ",msgStatus="+rpcType+"]";
 	}
 
-	public void setMsgStatus(int msgStatus) {
-		this.msgStatus = msgStatus;
+	public void setRpcType(int rpcType) {
+		this.rpcType = rpcType;
 	}
 
-	public int getMsgStatus() {
-		return msgStatus;
+	public int getRpcType() {
+		return rpcType;
 	}
 
 	public void setBytes(byte[] bytes) {

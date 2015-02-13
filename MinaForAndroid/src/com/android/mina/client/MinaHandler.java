@@ -1,7 +1,5 @@
 package com.android.mina.client;
 
-import java.io.UnsupportedEncodingException;
-import java.util.concurrent.atomic.AtomicLong;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
@@ -23,7 +21,7 @@ public class MinaHandler extends IoHandlerAdapter{
 		try {
 			MsgPack mp=(MsgPack)message;
 			System.out.println("收到客户端数据messageReceived----------："+ mp);
-			byte type=(byte)mp.getMsgMethod();
+			byte type=(byte)mp.getRpcMethod();
 
 			
 		} catch (Exception e) {

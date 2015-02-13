@@ -12,6 +12,7 @@ public class ClientTest {
 		testBean.setAge(10);
 		testBean.setName("LinJ");
 		AbstractTestService testService=new ClientTestService();
+		
 		testService.getAge(testBean);
 		testService.sayHello(testBean);
 	}
