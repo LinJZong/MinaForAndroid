@@ -20,6 +20,7 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import com.android.mina.RPCService.annotation.MinaRPCMethod;
 import com.android.mina.RPCService.annotation.MinaRPCType;
+import com.android.mina.RPCService.service.MinaRPCServerService;
 import com.android.mina.RPCService.service.MinaRPCService;
 import com.android.mina.protocol.MsgProtocol;
 
@@ -47,7 +48,9 @@ public class MinaServer {
 	public static SocketAcceptor getAcceptor(){
 		if(null==acceptor){
 			// 创建非阻塞的server端的Socket连接
-			acceptor = new NioSocketAcceptor();
+			acceptor = new NioSocketAcceptor();	
+			services.clear();
+			methods.clear();
 		}
 		return acceptor;
 	}
@@ -56,7 +59,7 @@ public class MinaServer {
 		DefaultIoFilterChainBuilder filterChain = getAcceptor().getFilterChain();
 		// 设置核心消息业务处理器
 		filterChain.addLast("codec", new ProtocolCodecFilter(new MsgProtocol()));
-		getAcceptor().setHandler(new MinaHandler());
+		getAcceptor().setHandler(new MinaServerHandler());
 		KeepAliveMessageFactory heartBeatFactory = new ServerKeepAliveMessageFactoryImpl();
 		KeepAliveFilter heartBeat = new KeepAliveFilter(heartBeatFactory,IdleStatus.BOTH_IDLE);
 		// 是否回发 
@@ -77,35 +80,44 @@ public class MinaServer {
 		}
 		return false;
 	}
-
-	public static void addService(MinaRPCService service){
+    
+	/**  
+	*  添加服务
+	*  @param service   
+	*/
+	public static void addService(MinaRPCServerService service){
 		if(service==null)
 			throw new RuntimeException("service is null");
 		if(!service.getClass().isAnnotationPresent(MinaRPCType.class))
 			throw new RuntimeException(service.getClass().getName() +" is not MinaRPCType");
+		if(!(service instanceof MinaRPCServerService))
+			throw new RuntimeException(service.getClass().getName() +" is not MinaRPCServerService");
 		String typeName=service.getClass().getAnnotation(MinaRPCType.class).typeName();
-        if(typeName==null||typeName.trim().equals("") )
+		if(typeName==null||typeName.trim().equals("") )
 			throw new RuntimeException("empty typename is illegal");
 		if(services.containsKey(typeName.hashCode())){
 			throw new RuntimeException("service key is exist");
 		}
-		System.out.println("add service:"+typeName+" "+typeName.hashCode());
 		services.put(typeName.hashCode(), service);
-		addMethod(typeName.hashCode(),service);
-	}
-	public static void addMethod(int type,MinaRPCService service){
-		Method[] array=service.getClass().getMethods();
-		HashMap<Integer,Method> methodMap=new HashMap<Integer, Method>();
-		for (Method method : array) {
-			if(method.isAnnotationPresent(MinaRPCMethod.class))
-				methodMap.put(method.getName().hashCode(), method);
-		}
-		methods.put(type, methodMap);
+		methods.put(typeName.hashCode(),service.methodMap);
+		System.out.println("add service:"+typeName+" "+typeName.hashCode());
 	}
 
+	/**  
+	*  根据服务名获取服务
+	*  @param key
+	*  @return   
+	*/
 	public static MinaRPCService getService(int key){
 		return services.get(key);
 	}
+	
+	/**  
+	*  根据服务名和方法名，获取方法
+	*  @param typeKey
+	*  @param methodKey
+	*  @return   
+	*/
 	public static Method getMethod(int typeKey,int methodKey){
 		if(methods.containsKey(typeKey))
 			return methods.get(typeKey).get(methodKey);

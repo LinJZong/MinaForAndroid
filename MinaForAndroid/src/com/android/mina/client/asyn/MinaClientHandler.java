@@ -1,4 +1,4 @@
-package com.android.mina.client;
+package com.android.mina.client.asyn;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
@@ -8,7 +8,7 @@ import com.android.mina.domain.MsgPack;
 
 
 
-public class MinaHandler extends IoHandlerAdapter{
+public class MinaClientHandler extends IoHandlerAdapter{
 
 
 	@Override

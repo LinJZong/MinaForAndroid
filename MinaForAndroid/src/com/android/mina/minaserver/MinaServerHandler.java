@@ -18,9 +18,12 @@ import com.android.mina.domain.MsgPack;
 import com.android.mina.domain.PackageTool;
 
 
-public class MinaHandler extends IoHandlerAdapter{
-	public MinaHandler(){
-
+public class MinaServerHandler extends IoHandlerAdapter{
+	private static MsgPack error;
+	private static int Method_NOT_EXIST=-1;
+	public MinaServerHandler(){
+		error=new MsgPack();
+		error.setRpcType(Method_NOT_EXIST);
 	}
 	@Override
 	public void messageSent(IoSession session, Object message) throws Exception {
@@ -76,9 +79,17 @@ public class MinaHandler extends IoHandlerAdapter{
 				Serializable obj=PackageTool.unpackMsg(mp);
 				//通过反射执行该方法
 				Object result=method.invoke(service,obj);
-				System.out.println(result);
+				if(result!=null&&result instanceof Serializable){
+					MsgPack msgPack=PackageTool.packMsg((Serializable)result);
+					session.write(msgPack);
+				}else {
+					MsgPack msgPack=PackageTool.packMsg(null);
+					session.write(msgPack);
+				}
+			}else {
+				session.write(error);
 			}
-			
+
 		}
 		catch(Exception ex){
 		}

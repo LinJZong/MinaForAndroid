@@ -1,4 +1,4 @@
-package com.android.mina.client;
+package com.android.mina.client.asyn;
 
 import java.io.UnsupportedEncodingException;
 
